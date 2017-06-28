@@ -6,6 +6,7 @@ FROM node:8.1.2-alpine
 RUN mkdir /app
 WORKDIR /app
 COPY package.json /app/
+COPY package-lock.json /app/
 RUN npm install
 
 COPY public /app/public
