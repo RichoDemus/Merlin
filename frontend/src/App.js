@@ -1,15 +1,18 @@
-import React, {Component} from "react";
+import React from "react";
 import "./App.css";
-import FetchFromBackend from "./components/FetchFromBackend";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import { merlinApp } from "./BaseReducer";
+import SelectPageContainer from "./LayoutSelection/SelectPageContainer";
 
-class App extends Component {
-    render() {
-        return (
-            <div className="App">
-                <FetchFromBackend/>
-            </div>
-        );
-    }
-}
+let store = createStore(merlinApp);
+
+const App = () => (
+    <Provider store={store}>
+        <div className="App">
+            <SelectPageContainer/>
+        </div>
+    </Provider>
+);
 
 export default App;
