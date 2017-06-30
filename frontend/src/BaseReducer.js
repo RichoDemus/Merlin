@@ -1,8 +1,8 @@
 import {combineReducers} from "redux";
 import {name} from "./NameInput/Reducers";
-import {page} from "./LayoutSelection/Reducers";
+import {view} from "./ViewSelection/Reducers";
 
 export const merlinApp = combineReducers({
     name,
-    page
+    view
 });

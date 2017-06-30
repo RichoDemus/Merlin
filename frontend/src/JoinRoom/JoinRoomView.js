@@ -1,10 +1,10 @@
 import React from "react";
 import DisplayNameContainer from "./DisplayNameContainer";
 
-const JoCRLayout = () => (
-    <div className="JoCR">
+const JoinRoomView = () => (
+    <div className="JoinRoom">
         <DisplayNameContainer/>
     </div>
 );
 
-export default JoCRLayout
+export default JoinRoomView

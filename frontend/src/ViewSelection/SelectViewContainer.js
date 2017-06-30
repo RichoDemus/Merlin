@@ -1,9 +1,9 @@
 import {connect} from "react-redux";
-import {SelectPage} from "./SelectPage";
+import {SelectView} from "./SelectView";
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        page: state.page
+        view: state.view
     }
 };
 
@@ -12,9 +12,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }
 };
 
-const SelectPageContainer = connect(
+const SelectViewContainer = connect(
     mapStateToProps,
     mapDispatchToProps
-)(SelectPage);
+)(SelectView);
 
-export default SelectPageContainer
+export default SelectViewContainer

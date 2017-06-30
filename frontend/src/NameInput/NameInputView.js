@@ -1,10 +1,10 @@
 import React from "react";
 import NameInputContainer from "./NameInputContainer";
 
-const NameInputLayout = () => (
+const NameInputView = () => (
     <div className="NameInput">
         <NameInputContainer/>
     </div>
 );
 
-export default NameInputLayout
+export default NameInputView

@@ -1,7 +1,7 @@
 import {connect} from "react-redux";
 import {NameInput} from "./NameInput";
 import {setName} from "./Actions";
-import {gotoJoCRPage} from "../LayoutSelection/Actions";
+import {gotoJoinRoomView} from "../ViewSelection/Actions";
 
 const mapStateToProps = (state, ownProps) => {
     return {
@@ -14,13 +14,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         onGoButtonClick: (event) => {
             const nameInput = event.target.previousElementSibling;
             dispatch(setName(nameInput.value));
-            dispatch(gotoJoCRPage());
+            dispatch(gotoJoinRoomView());
         },
         onKeyEnter: (event) => {
             if (event.key === "Enter") {
                 const nameInput = event.target;
                 dispatch(setName(nameInput.value));
-                dispatch(gotoJoCRPage());
+                dispatch(gotoJoinRoomView());
             }
         }
     }
