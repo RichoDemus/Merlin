@@ -1,11 +1,15 @@
 import React from "react";
 import "./App.css";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
+import {applyMiddleware, createStore} from "redux";
+import thunk from 'redux-thunk';
 import { merlinApp } from "./BaseReducer";
 import SelectViewContainer from "./ViewSelection/SelectViewContainer";
 
-let store = createStore(merlinApp);
+const store = createStore(
+    merlinApp,
+    applyMiddleware(thunk)
+);
 
 const App = () => (
     <Provider store={store}>

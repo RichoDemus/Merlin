@@ -1,13 +1,16 @@
 import {connect} from "react-redux";
 import {CreateRoom} from "./CreateRoom";
+import {createRoom} from "./Actions";
 
 const mapStateToProps = (state, ownProps) => {
-    return {
-    }
+    return {}
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
+        onCreateButtonClick: (event) => {
+            dispatch(createRoom());
+        }
     }
 };
 
