@@ -1,18 +1,9 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
+import Koa from "koa";
 
-const port = 8080   ;
-app.listen(port, () => {
-    console.log('We are live on ' + port);
+const app = new Koa();
+
+app.use(ctx => {
+    ctx.body = 'Hello World';
 });
 
-app.use((req, res, next) =>{
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-
-app.get('/', (req, res) =>{
-    res.send(JSON.stringify({message: "Hello World from the backend"}))
-});
+app.listen(8080);
