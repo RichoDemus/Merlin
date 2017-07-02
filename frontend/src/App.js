@@ -5,10 +5,11 @@ import {applyMiddleware, createStore} from "redux";
 import thunk from 'redux-thunk';
 import { merlinApp } from "./BaseReducer";
 import SelectViewContainer from "./ViewSelection/SelectViewContainer";
+import WebsocketMiddleware from "./Networking/WebsocketMiddleware";
 
 const store = createStore(
     merlinApp,
-    applyMiddleware(thunk)
+    applyMiddleware(thunk, WebsocketMiddleware)
 );
 
 const App = () => (

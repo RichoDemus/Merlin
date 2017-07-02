@@ -6,5 +6,9 @@ import {joinRoom} from "./JoinRoom/Reducers";
 export const merlinApp = combineReducers({
     name,
     view,
-    joinRoom
+    joinRoom,
+    asd: (state = {}, action) => {
+        console.log("Event:", action.type);
+        return state;
+    }
 });
