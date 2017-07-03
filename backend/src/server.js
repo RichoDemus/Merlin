@@ -18,8 +18,16 @@ app.ws.use(route.all('/websocket', ctx =>{
     console.log("ping");
     ctx.websocket.send(JSON.stringify({type:"DEBUG", msg:"Welcome"}));
     ctx.websocket.on('message', message =>{
-        // do something with the message from client
-        console.log(message);
+        console.log("Received:",message);
+        const action = JSON.parse(message);
+        switch(action.type) {
+            case "CREATE_ROOM":
+                console.log("User", action.name, "creating new room");
+                ctx.websocket.send(JSON.stringify({type:"ROOM_JOINED", key: 1234, users:[action.name]}));
+                break;
+            default:
+                //todo respond with error message
+        }
     });
 }));
 

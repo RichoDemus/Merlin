@@ -1,13 +1,14 @@
-import {CONNECT_TO_SERVER, connected, connecting, disconnected, messageReceived} from "./Actions";
+import {CONNECT_TO_SERVER, connected, connecting, disconnected, disconnecting, roomJoined} from "./Actions";
 
-const WebsocketMiddleware = (function () {
-    var socket = null;
+const WebsocketMiddleware = (() =>{
+    let socket = null;
 
-    const onOpen = (ws, store, token) => evt => {
+    const onOpen = (ws, store, action) => evt => {
         //Send a handshake, or authenticate with remote end
 
         //Tell the store we're connected
         store.dispatch(connected());
+        socket.send(JSON.stringify(action));
     };
 
     const onClose = (ws, store) => evt => {
@@ -21,13 +22,14 @@ const WebsocketMiddleware = (function () {
         const msg = JSON.parse(evt.data);
 
         switch (msg.type) {
-            case "CHAT_MESSAGE":
+            case "ROOM_JOINED":
                 //Dispatch an action that adds the received message to our state
-                store.dispatch(messageReceived(msg));
+                store.dispatch(roomJoined(msg));
                 break;
             case "DEBUG":
                 console.log("DEBUG:", msg.msg);
                 store.dispatch({type: "SEND_CHAT_MESSAGE", msg: "Hello from client"});
+                // store.dispatch({type: "DISCONNECT"});
                 break;
             default:
                 console.log("Received unknown message type: '" + msg.type + "'");
@@ -38,10 +40,25 @@ const WebsocketMiddleware = (function () {
     return store => next => action => {
         switch (action.type) {
 
+            case "CREATE_ROOM":
+                const actionWithUsername = Object.assign({}, action, {name: store.getState().name});
+                if(socket === null) {
+                    store.dispatch(connecting());
+
+                    socket = new WebSocket("ws://localhost:8080/websocket");
+                    socket.onmessage = onMessage(socket, store);
+                    socket.onclose = onClose(socket, store);
+                    socket.onopen = onOpen(socket, store, actionWithUsername);
+                } else {
+                    socket.send(JSON.stringify(actionWithUsername));
+                }
+
+                break;
+
             //The user wants us to connect
             case CONNECT_TO_SERVER:
                 //Start a new connection to the server
-                if (socket != null) {
+                if (socket !== null) {
                     socket.close();
                 }
                 //Send an action that shows a "connecting..." status for now
@@ -57,13 +74,13 @@ const WebsocketMiddleware = (function () {
 
             //The user wants us to disconnect
             case 'DISCONNECT':
-                if (socket != null) {
+                if (socket !== null) {
                     socket.close();
                 }
                 socket = null;
 
                 //Set our state to disconnected
-                store.dispatch(disconnected());
+                store.dispatch(disconnecting());
                 break;
 
             //Send the 'SEND_MESSAGE' action down the websocket to the server
@@ -76,7 +93,6 @@ const WebsocketMiddleware = (function () {
                 return next(action);
         }
     }
-
 })();
 
 export default WebsocketMiddleware

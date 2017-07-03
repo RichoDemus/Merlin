@@ -10,15 +10,9 @@ export const joinRoom = roomNumber => {
 };
 
 export const createRoom = () => {
-    return function (dispatch) {
-        dispatch(gotoLoadingView());
-        dispatch(connect());
-        return setupRoom().then(
-            sauce => dispatch(gotoLobbyView()),
-            //sauce => dispatch({type: "SEND_CHAT_MESSAGE"}),
-            error => dispatch(gotoErrorView())
-        );
-    };
+    return {
+        type: "CREATE_ROOM"
+    }
 };
 
 const setupRoom = () => {

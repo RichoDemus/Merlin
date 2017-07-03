@@ -7,9 +7,18 @@ import { merlinApp } from "./BaseReducer";
 import SelectViewContainer from "./ViewSelection/SelectViewContainer";
 import WebsocketMiddleware from "./Networking/WebsocketMiddleware";
 
+const logger = store => next => action => {
+    console.group("Action:", action.type);
+    console.info('dispatching', action);
+    let result = next(action);
+    console.log('next state', store.getState());
+    console.groupEnd(action.type);
+    return result
+};
+
 const store = createStore(
     merlinApp,
-    applyMiddleware(thunk, WebsocketMiddleware)
+    applyMiddleware(logger, thunk, WebsocketMiddleware)
 );
 
 const App = () => (
