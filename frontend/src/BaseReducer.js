@@ -3,6 +3,7 @@ import {name} from "./NameInput/Reducers";
 import {view} from "./ViewSelection/Reducers";
 import {joinRoom} from "./JoinRoom/Reducers";
 import {room} from "./Lobby/Reducers";
+import {error} from "./Error/Reducers";
 
 export const merlinApp = combineReducers({
     name,
@@ -12,5 +13,6 @@ export const merlinApp = combineReducers({
         console.log("Event:", action.type);
         return state;
     },
-    room
+    room,
+    error
 });

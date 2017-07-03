@@ -3,6 +3,7 @@ export const CONNECTING_TO_SERVER = "CONNECTING_TO_SERVER";
 export const CONNECTED_TO_SERVER = "CONNECTED_TO_SERVER";
 export const DISCONNECTING_FROM_SERVER = "DISCONNECTING_FROM_SERVER";
 export const DISCONNECTED_FROM_SERVER = "DISCONNECTED_FROM_SERVER";
+export const ERROR = "ERROR";
 export const ROOM_JOINED = "ROOM_JOINED";
 
 export const connect = () => {
@@ -32,6 +33,13 @@ export const disconnecting = () => {
 export const disconnected = () => {
     return {
         type: DISCONNECTED_FROM_SERVER
+    }
+};
+
+export const error = () => {
+    return {
+        type: ERROR,
+        message: "Lost connection to server"
     }
 };
 

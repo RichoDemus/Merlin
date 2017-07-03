@@ -1,4 +1,4 @@
-import {CONNECT_TO_SERVER, connected, connecting, disconnected, disconnecting, roomJoined} from "./Actions";
+import {CONNECT_TO_SERVER, connected, connecting, disconnected, disconnecting, error, roomJoined} from "./Actions";
 import {CREATE_ROOM, JOIN_ROOM} from "../JoinRoom/Actions";
 
 const WebsocketMiddleware = (() =>{
@@ -15,6 +15,7 @@ const WebsocketMiddleware = (() =>{
     const onClose = (ws, store) => evt => {
         //Tell the store we've disconnected
         store.dispatch(disconnected());
+        store.dispatch(error());
     };
 
     const onMessage = (ws, store) => evt => {
