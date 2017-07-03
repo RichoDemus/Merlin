@@ -1,4 +1,5 @@
 import {CONNECT_TO_SERVER, connected, connecting, disconnected, disconnecting, roomJoined} from "./Actions";
+import {CREATE_ROOM, JOIN_ROOM} from "../JoinRoom/Actions";
 
 const WebsocketMiddleware = (() =>{
     let socket = null;
@@ -38,9 +39,23 @@ const WebsocketMiddleware = (() =>{
     };
 
     return store => next => action => {
+        const actionWithUsername = Object.assign({}, action, {name: store.getState().name});
         switch (action.type) {
-            case "CREATE_ROOM":
-                const actionWithUsername = Object.assign({}, action, {name: store.getState().name});
+            case CREATE_ROOM:
+                if(socket === null) {
+                    store.dispatch(connecting());
+
+                    socket = new WebSocket("ws://localhost:8080/websocket");
+                    socket.onmessage = onMessage(socket, store);
+                    socket.onclose = onClose(socket, store);
+                    socket.onopen = onOpen(socket, store, actionWithUsername);
+                } else {
+                    socket.send(JSON.stringify(actionWithUsername));
+                }
+
+                break;
+
+            case JOIN_ROOM:
                 if(socket === null) {
                     store.dispatch(connecting());
 

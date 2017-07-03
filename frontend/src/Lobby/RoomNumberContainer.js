@@ -1,5 +1,4 @@
 import {connect} from "react-redux";
-import {ListUsers} from "./ListUsers";
 import {RoomNumber} from "./RoomNumber";
 
 const mapStateToProps = (state, ownProps) => {

@@ -4,6 +4,7 @@ export const joinRoom = (state = null, action) => {
         case JOIN_ROOM:
             console.log("Joining room: ", action.roomNumber);
             return state;
+        default:
+            return state;
     }
-    return state;
 };

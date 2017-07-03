@@ -1,6 +1,5 @@
-import {gotoErrorView, gotoLoadingView, gotoLobbyView} from "../ViewSelection/Actions";
-import {connect} from "../Networking/Actions";
 export const JOIN_ROOM = "JOIN_ROOM";
+export const CREATE_ROOM = "CREATE_ROOM";
 
 export const joinRoom = roomNumber => {
     return {
@@ -11,12 +10,6 @@ export const joinRoom = roomNumber => {
 
 export const createRoom = () => {
     return {
-        type: "CREATE_ROOM"
+        type: CREATE_ROOM
     }
-};
-
-const setupRoom = () => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => { resolve() }, 1000);
-    });
 };
