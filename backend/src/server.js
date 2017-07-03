@@ -23,7 +23,7 @@ app.ws.use(route.all('/websocket', ctx =>{
         switch(action.type) {
             case "CREATE_ROOM":
                 console.log("User", action.name, "creating new room");
-                ctx.websocket.send(JSON.stringify({type:"ROOM_JOINED", key: 1234, users:[action.name]}));
+                ctx.websocket.send(JSON.stringify({type:"ROOM_JOINED", host:true, number: 1234, users:[action.name]}));
                 break;
             default:
                 //todo respond with error message

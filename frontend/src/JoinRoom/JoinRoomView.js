@@ -1,5 +1,5 @@
 import React from "react";
-import DisplayNameContainer from "./DisplayNameContainer";
+import DisplayNameContainer from "../common/displayname/DisplayNameContainer";
 import CreateRoomContainer from "./CreateRoomContainer";
 import JoinRoomContainer from "./JoinRoomContainer";
 

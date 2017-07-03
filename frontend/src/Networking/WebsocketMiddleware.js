@@ -39,7 +39,6 @@ const WebsocketMiddleware = (() =>{
 
     return store => next => action => {
         switch (action.type) {
-
             case "CREATE_ROOM":
                 const actionWithUsername = Object.assign({}, action, {name: store.getState().name});
                 if(socket === null) {

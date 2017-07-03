@@ -38,6 +38,8 @@ export const disconnected = () => {
 export const roomJoined = (message) => {
     return {
         type: ROOM_JOINED,
-        users: message.users
+        users: message.users,
+        number: message.number,
+        host: message.host
     }
 };
