@@ -2,17 +2,21 @@ import Room from "./Room";
 
 class Rooms {
     constructor() {
-        this.rooms = new Map();
+        this.rooms = [];
     }
 
     get size() {
-        return this.rooms.size;
+        return this.rooms.length;
     }
 
     createRoom(hostPlayer) {
         const room = new Room(hostPlayer);
-        this.rooms.set(room.roomNumber, room);
+        this.rooms.push(room);
         return room;
+    }
+
+    getRoom(roomNumber) {
+        return this.rooms.filter(room => room.roomNumber === roomNumber)[0];
     }
 }
 

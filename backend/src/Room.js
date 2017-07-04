@@ -8,6 +8,10 @@ class Room {
     get size() {
         return this.players.size;
     }
+
+    join(player) {
+        this.players.push(player);
+    }
 }
 
 export default Room;

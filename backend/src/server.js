@@ -24,26 +24,38 @@ app.ws.use(route.all('/websocket', ctx => {
         console.log("Received:", message);
         const action = JSON.parse(message);
         switch (action.type) {
-            case "CREATE_ROOM":
+            case "CREATE_ROOM": {
                 console.log("User", action.name, "creating new room");
                 const room = rooms.createRoom(new Player(action.name));
                 console.log("Created room:", JSON.stringify(room), "There are now", rooms.size, "rooms");
                 ctx.websocket.send(JSON.stringify({
                     type: "ROOM_JOINED",
                     host: true,
-                    number: 1234,
+                    number: room.roomNumber,
                     users: [action.name]
                 }));
                 break;
-            case "JOIN_ROOM":
+            }
+            case "JOIN_ROOM": {
                 console.log("User", action.name, "joining room", action.roomNumber);
+                const room = rooms.getRoom(action.roomNumber);
+                if (!room) {
+                    console.log("Room not found:", action.roomNumber);
+                    ctx.websocket.send(JSON.stringify({
+                        type: "ROOM_NOT_FOUND"
+                    }));
+                    break;
+                }
+                room.join(new Player(action.name));
+                console.log("User", action.name, "joined room", JSON.stringify(room));
                 ctx.websocket.send(JSON.stringify({
                     type: "ROOM_JOINED",
                     host: false,
-                    number: action.roomNumber,
-                    users: [action.name]
+                    number: room.roomNumber,
+                    users: room.players //todo change player to user
                 }));
                 break;
+            }
             default:
             //todo respond with error message
         }
