@@ -1,8 +1,11 @@
 import Koa from "koa";
 import route from "koa-route";
 import websockify from "koa-websocket";
+import Rooms from "./Rooms.js";
+import Player from "./Player";
 
 const app = websockify(new Koa());
+const rooms = new Rooms();
 
 // Regular middleware
 // Note it's app.ws.use and not app.use
@@ -23,6 +26,8 @@ app.ws.use(route.all('/websocket', ctx =>{
         switch(action.type) {
             case "CREATE_ROOM":
                 console.log("User", action.name, "creating new room");
+                const room = rooms.createRoom(new Player(action.name));
+                console.log("Created room:", JSON.stringify(room), "There are now", rooms.size, "rooms");
                 ctx.websocket.send(JSON.stringify({type:"ROOM_JOINED", host:true, number: 1234, users:[action.name]}));
                 break;
             case "JOIN_ROOM":
