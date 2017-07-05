@@ -28,6 +28,7 @@ app.ws.use(route.all('/websocket', ctx => {
                 console.log("User", action.name, "creating new room");
                 const player = new Player(action.name, ctx.websocket);
                 const room = rooms.createRoom(player);
+                ctx.websocket.on('close', room.leave(player)); //todo kill room or do host re-negotiation
                 console.log("Created room:", JSON.stringify(room), "There are now", rooms.size, "rooms");
                 player.sendMessage({
                     type: "ROOM_JOINED",
@@ -47,7 +48,10 @@ app.ws.use(route.all('/websocket', ctx => {
                     }));
                     break;
                 }
-                room.join(new Player(action.name));
+
+                const player = new Player(action.name);
+                room.join(player);
+                ctx.websocket.on('close', room.leave(player));
                 console.log("User", action.name, "joined room", JSON.stringify(room));
                 ctx.websocket.send(JSON.stringify({
                     type: "ROOM_JOINED",

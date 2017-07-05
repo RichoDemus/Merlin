@@ -1,4 +1,4 @@
-import {playerJoined} from "./Messages";
+import {playerJoined, playerLeft} from "./Messages";
 class Room {
     constructor(hostPlayer) {
         this.players = [];
@@ -13,6 +13,13 @@ class Room {
     join(player) {
         this.players.forEach(it => it.sendMessage(playerJoined(player)));
         this.players.push(player);
+    }
+
+    leave(player) {
+        return () => {
+            this.players = this.players.filter(p => p.name !== player.name);
+            this.players.forEach(it => it.sendMessage(playerLeft(player)));
+        };
     }
 }
 

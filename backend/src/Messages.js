@@ -4,3 +4,10 @@ export const playerJoined = player => {
         player
     };
 };
+
+export const playerLeft = player => {
+    return {
+        type: "PLAYER_LEFT",
+        player
+    };
+};
