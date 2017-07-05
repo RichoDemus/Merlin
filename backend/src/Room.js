@@ -1,3 +1,4 @@
+import {playerJoined} from "./Messages";
 class Room {
     constructor(hostPlayer) {
         this.players = [];
@@ -10,6 +11,7 @@ class Room {
     }
 
     join(player) {
+        this.players.forEach(it => it.sendMessage(playerJoined(player)));
         this.players.push(player);
     }
 }

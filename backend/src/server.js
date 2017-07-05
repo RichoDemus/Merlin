@@ -26,14 +26,15 @@ app.ws.use(route.all('/websocket', ctx => {
         switch (action.type) {
             case "CREATE_ROOM": {
                 console.log("User", action.name, "creating new room");
-                const room = rooms.createRoom(new Player(action.name));
+                const player = new Player(action.name, ctx.websocket);
+                const room = rooms.createRoom(player);
                 console.log("Created room:", JSON.stringify(room), "There are now", rooms.size, "rooms");
-                ctx.websocket.send(JSON.stringify({
+                player.sendMessage({
                     type: "ROOM_JOINED",
                     host: true,
                     number: room.roomNumber,
-                    users: [action.name]
-                }));
+                    users: room.players
+                });
                 break;
             }
             case "JOIN_ROOM": {
@@ -52,13 +53,16 @@ app.ws.use(route.all('/websocket', ctx => {
                     type: "ROOM_JOINED",
                     host: false,
                     number: room.roomNumber,
-                    users: room.players //todo change player to user
+                    users: room.players
                 }));
                 break;
             }
             default:
             //todo respond with error message
         }
+    });
+    ctx.websocket.on('close', message => {
+        console.log("Socket closed...")
     });
 }));
 

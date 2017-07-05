@@ -5,6 +5,7 @@ export const DISCONNECTING_FROM_SERVER = "DISCONNECTING_FROM_SERVER";
 export const DISCONNECTED_FROM_SERVER = "DISCONNECTED_FROM_SERVER";
 export const ERROR = "ERROR";
 export const ROOM_JOINED = "ROOM_JOINED";
+export const PLAYER_JOINED = "PLAYER_JOINED";
 
 export const connect = () => {
     return {

@@ -10,6 +10,10 @@ class Player {
             name: this.name
         };
     }
+
+    sendMessage(message) {
+        this.websocket.send(JSON.stringify(message));
+    }
 }
 
 export default Player;

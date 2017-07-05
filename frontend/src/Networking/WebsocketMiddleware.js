@@ -34,7 +34,8 @@ const WebsocketMiddleware = (() =>{
                 // store.dispatch({type: "DISCONNECT"});
                 break;
             default:
-                console.log("Received unknown message type: '" + msg.type + "'");
+                console.log("Received unknown message type: '" + msg.type + "', dispating it anyway");
+                store.dispatch(msg);
                 break;
         }
     };
@@ -46,7 +47,7 @@ const WebsocketMiddleware = (() =>{
                 if(socket === null) {
                     store.dispatch(connecting());
 
-                    socket = new WebSocket("ws://localhost:8080/websocket");
+                    socket = new WebSocket("ws://" + window.location.hostname + ":8080/websocket");
                     socket.onmessage = onMessage(socket, store);
                     socket.onclose = onClose(socket, store);
                     socket.onopen = onOpen(socket, store, actionWithUsername);
@@ -60,7 +61,7 @@ const WebsocketMiddleware = (() =>{
                 if(socket === null) {
                     store.dispatch(connecting());
 
-                    socket = new WebSocket("ws://localhost:8080/websocket");
+                    socket = new WebSocket("ws://" + window.location.hostname + ":8080/websocket");
                     socket.onmessage = onMessage(socket, store);
                     socket.onclose = onClose(socket, store);
                     socket.onopen = onOpen(socket, store, actionWithUsername);
