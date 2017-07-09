@@ -1,5 +1,5 @@
 import {describe, it} from "mocha";
-import app from "../src/server";
+import app from "../src/Server";
 import WebSocket from "ws";
 const expect = require('chai').expect;
 
