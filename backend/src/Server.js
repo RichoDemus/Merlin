@@ -72,10 +72,14 @@ const createServer = () => {
     }));
 
     const server = {};
+    let handle = null;
     server.start = () => {
-        app.listen(8080, () => {
+        handle = app.listen(8080, () => {
             console.log('Server listening at port %d', 8080);
         });
+    };
+    server.stop = () => {
+        handle.close();
     };
     return server;
 };

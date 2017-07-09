@@ -1,11 +1,16 @@
-import {before, describe, it} from "mocha";
+import {afterEach, beforeEach, describe, it} from "mocha";
 import createServer from "../src/Server";
 import WebSocket from "ws";
 const expect = require('chai').expect;
 
 describe("Test Backend", () => {
-    before("Start Server", () => {
-        createServer().start();
+    const server = createServer();
+    beforeEach("Start Server", () => {
+        server.start();
+    });
+
+    afterEach("Stop Server", () => {
+        server.stop();
     });
 
     it("Connects and handshakes", done => {
