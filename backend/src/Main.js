@@ -1,2 +1,3 @@
-import server from "./Server";
+import createServer from "./Server";
 
+createServer().start();
