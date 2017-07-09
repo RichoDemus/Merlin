@@ -1,9 +1,9 @@
 import React from "react";
 import "./App.css";
-import { Provider } from "react-redux";
+import {Provider} from "react-redux";
 import {applyMiddleware, createStore} from "redux";
-import thunk from 'redux-thunk';
-import { merlinApp } from "./BaseReducer";
+import thunk from "redux-thunk";
+import {merlinApp} from "./BaseReducer";
 import SelectViewContainer from "./ViewSelection/SelectViewContainer";
 import WebsocketMiddleware from "./Networking/WebsocketMiddleware";
 

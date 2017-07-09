@@ -8,7 +8,7 @@ export const view = (state = NAME_INPUT_VIEW, action) => {
         case ROOM_JOINED:
             return LOBBY_VIEW;
         case ERROR:
-            return  ERROR_VIEW;
+            return ERROR_VIEW;
         default:
             return state;
     }

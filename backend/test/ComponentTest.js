@@ -34,7 +34,7 @@ describe("Test Backend", () => {
         const assertRoomJoined = roomNumber => msg => {
             expect(msg.type).to.equal("ROOM_JOINED");
             expect(msg.host).to.equal(false);
-            expect(JSON.stringify(msg.users)).to.equal(JSON.stringify([{name:"Carl"},{name:"Jill"}]));
+            expect(JSON.stringify(msg.users)).to.equal(JSON.stringify([{name: "Carl"}, {name: "Jill"}]));
             expect(msg.number).to.equal(roomNumber);
         };
 
@@ -81,7 +81,7 @@ const createClient = () => {
     client.createRoom = name => {
         const promise = new Promise((resolve, reject) => {
             const listener = msg => {
-                if(msg.type === "ROOM_JOINED") {
+                if (msg.type === "ROOM_JOINED") {
                     resolve({msg, client});
                 }
             };
@@ -94,7 +94,7 @@ const createClient = () => {
     client.joinRoom = (name, roomNumber) => {
         const promise = new Promise((resolve, reject) => {
             const listener = msg => {
-                if(msg.type === "ROOM_JOINED") {
+                if (msg.type === "ROOM_JOINED") {
                     resolve(msg);
                 }
             };
@@ -113,7 +113,7 @@ const createClient = () => {
         });
     };
 
-    const connected =  resolve => () => {
+    const connected = resolve => () => {
         resolve(client);
     };
 

@@ -4,8 +4,7 @@ import {joinRoom} from "./Actions";
 import {gotoLoadingView} from "../ViewSelection/Actions";
 
 const mapStateToProps = (state, ownProps) => {
-    return {
-    }
+    return {}
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {

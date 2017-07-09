@@ -8,8 +8,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-    return {
-    }
+    return {}
 };
 
 const NameInputContainer = connect(

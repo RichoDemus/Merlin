@@ -6,10 +6,10 @@ import LoadingView from "../Loading/LoadingView";
 import LobbyView from "../Lobby/LobbyView";
 import ErrorView from "../Error/ErrorView";
 
-export const SelectView = ({ view }) => (
+export const SelectView = ({view}) => (
     <div>
         { (() => {
-            switch(view) {
+            switch (view) {
                 case JOIN_ROOM_VIEW:
                     return <JoinRoomView/>;
                 case LOADING_VIEW:

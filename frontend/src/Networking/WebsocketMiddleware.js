@@ -1,7 +1,7 @@
 import {CONNECT_TO_SERVER, connected, connecting, disconnected, disconnecting, error, roomJoined} from "./Actions";
 import {CREATE_ROOM, JOIN_ROOM} from "../JoinRoom/Actions";
 
-const WebsocketMiddleware = (() =>{
+const WebsocketMiddleware = (() => {
     let socket = null;
 
     const onOpen = (ws, store, action) => evt => {
@@ -44,7 +44,7 @@ const WebsocketMiddleware = (() =>{
         const actionWithUsername = Object.assign({}, action, {name: store.getState().name});
         switch (action.type) {
             case CREATE_ROOM:
-                if(socket === null) {
+                if (socket === null) {
                     store.dispatch(connecting());
 
                     socket = new WebSocket("ws://" + window.location.hostname + ":8080/websocket");
@@ -58,7 +58,7 @@ const WebsocketMiddleware = (() =>{
                 break;
 
             case JOIN_ROOM:
-                if(socket === null) {
+                if (socket === null) {
                     store.dispatch(connecting());
 
                     socket = new WebSocket("ws://" + window.location.hostname + ":8080/websocket");
