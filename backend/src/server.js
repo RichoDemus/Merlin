@@ -73,3 +73,5 @@ app.ws.use(route.all('/websocket', ctx => {
 app.listen(8080, () => {
     console.log('Server listening at port %d', 8080);
 });
+
+export default app;
