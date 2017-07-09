@@ -5,78 +5,110 @@ const expect = require('chai').expect;
 
 describe("Test Backend", () => {
     it("Connects and handshakes", done => {
-        createClient(() => {}, msg => {
-            const expected = JSON.stringify({type: "DEBUG", msg: "Welcome"});
-            expect(JSON.stringify(msg)).to.equal(expected);
-            done();
-        });
+        createClient().then(_ => done());
     });
 
-    it("Creates a room", done => {
-        const onOpen = client => () => {
-            client.createRoom("richo");
-        };
-        const onMessage = msg => {
-            if(msg.type !== "ROOM_JOINED") {
-                return;
-            }
+    it("Carl creates a room", () => {
+        const assertRoomJoined = ({msg}) => {
             expect(msg.type).to.equal("ROOM_JOINED");
             expect(msg.host).to.equal(true);
-            expect(JSON.stringify(msg.users)).to.equal(JSON.stringify([{name:"richo"}]));
+            expect(JSON.stringify(msg.users)).to.equal(JSON.stringify([{name: "Carl"}]));
             expect(msg.number).to.be.a("number");
-            done();
         };
-        createClient(onOpen, onMessage);
+
+        return createClient()
+            .then(client => client.createRoom("Carl"))
+            .then(assertRoomJoined);
     });
 
-    it("Joins a room", done => {
-        // setup Host
-        const hostOnOpen = client => () => {
-            client.createRoom("Carl");
+    it("Carl creates a room that Jill joins", () => {
+        const assertRoomJoined = roomNumber => msg => {
+            expect(msg.type).to.equal("ROOM_JOINED");
+            expect(msg.host).to.equal(false);
+            expect(JSON.stringify(msg.users)).to.equal(JSON.stringify([{name:"Carl"},{name:"Jill"}]));
+            expect(msg.number).to.equal(roomNumber);
         };
-        const hostOnMessage = msg => {
-            if(msg.type !== "ROOM_JOINED") {
-                return;
-            }
-            const roomNumber = msg.number;
 
-            const onOpen = client => () => {
-                // setup client
-                client.joinRoom("Jill", roomNumber);
-            };
-            const onMessage = msg => {
-                if(msg.type !== "ROOM_JOINED") {
-                    return;
-                }
-                expect(msg.type).to.equal("ROOM_JOINED");
-                expect(msg.host).to.equal(false);
-                expect(JSON.stringify(msg.users)).to.equal(JSON.stringify([{name:"Carl"},{name:"Jill"}]));
-                expect(msg.number).to.equal(roomNumber);
-                done();
-            };
-            createClient(onOpen, onMessage);
+        const assertCarlSeesJillJoin = msg => {
+            expect(msg.type).to.equal("PLAYER_JOINED");
+            expect(msg.player.name).to.equal("Jill");
         };
-        createClient(hostOnOpen, hostOnMessage);
+
+        const createRoomPromise = createClient()
+            .then(client => client.createRoom("Carl"));
+
+        // handle flow and asserts for Jill
+        const joinRoomPromise = createRoomPromise
+            .then(({msg}) => msg.number)
+            .then(room =>
+                createClient()
+                    .then(client => client.joinRoom("Jill", room))
+                    .then(assertRoomJoined(room))
+            );
+
+        // handle rest of the flow for Carl
+        const roomParticipantReceivesJoinedMessage = createRoomPromise
+            .then(({client}) => client.getNextMessage())
+            .then(assertCarlSeesJillJoin);
+
+        return Promise.all([joinRoomPromise, roomParticipantReceivesJoinedMessage]);
     });
 });
 
-const createClient = (onOpen, onMessage) => {
+const createClient = () => {
     const client = {};
     const socket = new WebSocket("ws://localhost:8080/websocket");
 
     client.send = socket.send;
-    socket.onopen = onOpen(client);
+    client.messages = [];
+    const messageListeners = [];
+
     socket.onmessage = msg => {
-        onMessage(JSON.parse(msg.data));
+        const parsed = JSON.parse(msg.data);
+        client.messages.push(parsed);
+        messageListeners.forEach(f => f(parsed));
     };
 
     client.createRoom = name => {
+        const promise = new Promise((resolve, reject) => {
+            const listener = msg => {
+                if(msg.type === "ROOM_JOINED") {
+                    resolve({msg, client});
+                }
+            };
+            messageListeners.push(listener);
+        });
         socket.send(JSON.stringify({type: "CREATE_ROOM", name}));
+        return promise;
     };
 
     client.joinRoom = (name, roomNumber) => {
+        const promise = new Promise((resolve, reject) => {
+            const listener = msg => {
+                if(msg.type === "ROOM_JOINED") {
+                    resolve(msg);
+                }
+            };
+            messageListeners.push(listener);
+        });
         socket.send(JSON.stringify({type: "JOIN_ROOM", name, roomNumber}));
+        return promise;
     };
 
-    return client;
+    client.getNextMessage = () => {
+        return new Promise((resolve, reject) => {
+            socket.onmessage = msg => {
+                const parsed = JSON.parse(msg.data);
+                resolve(parsed);
+            }
+        });
+    };
+
+    const connected =  resolve => () => {
+        resolve(client);
+    };
+
+    return new Promise((resolve, reject) => {
+        socket.onopen = connected(resolve);
+    });
 };
