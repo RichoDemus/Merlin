@@ -28,6 +28,36 @@ describe("Test Backend", () => {
         };
         createClient(onOpen, onMessage);
     });
+
+    it("Joins a room", done => {
+        // setup Host
+        const hostOnOpen = client => () => {
+            client.createRoom("Carl");
+        };
+        const hostOnMessage = msg => {
+            if(msg.type !== "ROOM_JOINED") {
+                return;
+            }
+            const roomNumber = msg.number;
+
+            const onOpen = client => () => {
+                // setup client
+                client.joinRoom("Jill", roomNumber);
+            };
+            const onMessage = msg => {
+                if(msg.type !== "ROOM_JOINED") {
+                    return;
+                }
+                expect(msg.type).to.equal("ROOM_JOINED");
+                expect(msg.host).to.equal(false);
+                expect(JSON.stringify(msg.users)).to.equal(JSON.stringify([{name:"Carl"},{name:"Jill"}]));
+                expect(msg.number).to.equal(roomNumber);
+                done();
+            };
+            createClient(onOpen, onMessage);
+        };
+        createClient(hostOnOpen, hostOnMessage);
+    });
 });
 
 const createClient = (onOpen, onMessage) => {
@@ -42,6 +72,10 @@ const createClient = (onOpen, onMessage) => {
 
     client.createRoom = name => {
         socket.send(JSON.stringify({type: "CREATE_ROOM", name}));
+    };
+
+    client.joinRoom = (name, roomNumber) => {
+        socket.send(JSON.stringify({type: "JOIN_ROOM", name, roomNumber}));
     };
 
     return client;
