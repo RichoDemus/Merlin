@@ -1,7 +1,7 @@
 import {afterEach, beforeEach, describe, it} from "mocha";
 import createServer from "../src/Server";
 import WebSocket from "ws";
-import { expect } from "chai";
+import {expect} from "chai";
 
 describe("Test Backend", () => {
     const server = createServer();
@@ -57,10 +57,54 @@ describe("Test Backend", () => {
 
         // handle rest of the flow for Carl
         const roomParticipantReceivesJoinedMessage = createRoomPromise
-            .then(({client}) => client.getNextMessage())
+            .then(({client}) => client.waitForMessageOfType("PLAYER_JOINED"))
             .then(assertCarlSeesJillJoin);
 
         return Promise.all([joinRoomPromise, roomParticipantReceivesJoinedMessage]);
+    });
+
+    it("Carl starts a game", () => {
+        const assertNewGame = newGameResponses => {
+            console.log("Result:", JSON.stringify(newGameResponses));
+            const evilPeople = newGameResponses.filter(msg => msg.role === "EVIL");
+            const goodPeople = newGameResponses.filter(msg => msg.role === "GOOD");
+
+            expect(newGameResponses).to.have.lengthOf(5);
+            expect(goodPeople).to.have.lengthOf(3);
+            expect(evilPeople).to.have.lengthOf(2);
+        };
+
+        let carlsClient = null;
+        let joiningClients;
+
+        const allJoiningRoomPromise = createClient()
+            .then(client => {
+                carlsClient = client;
+                return client.createRoom("Carl")
+            })
+            .then(({msg}) => msg.number)
+            .then(room => {
+                return Promise.all([createClient(), createClient(), createClient(), createClient()])
+                    .then(clients => {
+                        joiningClients = clients;
+                        const names = ["Jill", "Jonas", "James", "Joanna"];
+                        return clients.map((client, i) => {
+                            client.joinRoom(names[i], room);
+                        })
+                    })
+            });
+
+        const allPlayersInLobbyPromise = allJoiningRoomPromise
+            .then(_ => carlsClient.waitForMessageOfType("PLAYER_JOINED"));
+
+        const allPlayersGotTheirRolesPromise = allPlayersInLobbyPromise
+            .then(_ => Promise.all([...joiningClients, carlsClient].map(client => client.waitForMessageOfType("NEW_GAME"))))
+            .then(assertNewGame);
+
+        const createNewGamePromise = allPlayersInLobbyPromise
+            .then(_ => carlsClient.newGame());
+
+        return Promise.all([createNewGamePromise, allPlayersGotTheirRolesPromise]);
     });
 });
 
@@ -70,7 +114,7 @@ const createClient = () => {
 
     client.send = socket.send;
     client.messages = [];
-    const messageListeners = [];
+    let messageListeners = [];
 
     socket.onmessage = msg => {
         const parsed = JSON.parse(msg.data);
@@ -79,6 +123,7 @@ const createClient = () => {
     };
 
     client.createRoom = name => {
+        client.name = name;
         const promise = new Promise((resolve, reject) => {
             const listener = msg => {
                 if (msg.type === "ROOM_JOINED") {
@@ -92,10 +137,13 @@ const createClient = () => {
     };
 
     client.joinRoom = (name, roomNumber) => {
+        client.name = name;
         const promise = new Promise((resolve, reject) => {
             const listener = msg => {
                 if (msg.type === "ROOM_JOINED") {
                     resolve(msg);
+                } else {
+                    console.log(client.name, "Join room listener eating:", msg);
                 }
             };
             messageListeners.push(listener);
@@ -104,13 +152,31 @@ const createClient = () => {
         return promise;
     };
 
-    client.getNextMessage = () => {
+    client.waitForMessageOfType = type => {
+        console.log(client.name, "waiting for", type);
         return new Promise((resolve, reject) => {
-            socket.onmessage = msg => {
-                const parsed = JSON.parse(msg.data);
-                resolve(parsed);
-            }
+            const listener = msg => {
+                console.log(client.name, "Client got message:", msg, "expected", type);
+                if (msg.type === type) {
+                    resolve(msg);
+                    messageListeners = [];
+                }
+            };
+            messageListeners.push(listener);
         });
+    };
+
+    client.newGame = roomNumber => {
+        const promise = new Promise((resolve, reject) => {
+            const listener = msg => {
+                if (msg.type === "NEW_GAME") {
+                    resolve({msg, client});
+                }
+            };
+            messageListeners.push(listener);
+        });
+        socket.send(JSON.stringify({type: "NEW_GAME", roomNumber}));
+        return promise;
     };
 
     const connected = resolve => () => {

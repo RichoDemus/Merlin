@@ -27,22 +27,22 @@ const createServer = () => {
             switch (action.type) {
                 case "CREATE_ROOM": {
                     console.log("User", action.name, "creating new room");
-                    const player = new Player(action.name, ctx.websocket);
-                    const room = rooms.createRoom(player);
-                    ctx.websocket.on('close', room.leave(player)); //todo kill room or do host re-negotiation
-                    console.log("Created room:", JSON.stringify(room), "There are now", rooms.size, "rooms");
-                    player.sendMessage({
+                    ctx.player = new Player(action.name, ctx.websocket);
+                    ctx.room = rooms.createRoom(ctx.player);
+                    ctx.websocket.on('close', ctx.room.leave(ctx.player)); //todo kill room or do host re-negotiation
+                    console.log("Created room:", JSON.stringify(ctx.room), "There are now", rooms.size, "rooms");
+                    ctx.player.sendMessage({
                         type: "ROOM_JOINED",
                         host: true,
-                        number: room.roomNumber,
-                        users: room.players
+                        number: ctx.room.roomNumber,
+                        users: ctx.room.players
                     });
                     break;
                 }
                 case "JOIN_ROOM": {
                     console.log("User", action.name, "joining room", action.roomNumber);
-                    const room = rooms.getRoom(action.roomNumber);
-                    if (!room) {
+                    ctx.room = rooms.getRoom(action.roomNumber);
+                    if (!ctx.room) {
                         console.log("Room not found:", action.roomNumber);
                         ctx.websocket.send(JSON.stringify({
                             type: "ROOM_NOT_FOUND"
@@ -50,20 +50,24 @@ const createServer = () => {
                         break;
                     }
 
-                    const player = new Player(action.name);
-                    room.join(player);
-                    ctx.websocket.on('close', room.leave(player));
-                    console.log("User", action.name, "joined room", JSON.stringify(room));
+                    ctx.player = new Player(action.name, ctx.websocket);
+                    ctx.room.join(ctx.player);
+                    ctx.websocket.on('close', ctx.room.leave(ctx.player));
+                    console.log("User", action.name, "joined room", JSON.stringify(ctx.room));
                     ctx.websocket.send(JSON.stringify({
                         type: "ROOM_JOINED",
                         host: false,
-                        number: room.roomNumber,
-                        users: room.players
+                        number: ctx.room.roomNumber,
+                        users: ctx.room.players
                     }));
                     break;
                 }
+                case "NEW_GAME": {
+                    ctx.room.newGame();
+                    break;
+                }
                 default:
-                //todo respond with error message
+                    console.log("Unknown type:",action.type);
             }
         });
         ctx.websocket.on('close', message => {
