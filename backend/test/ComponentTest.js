@@ -1,7 +1,7 @@
 import {afterEach, beforeEach, describe, it} from "mocha";
 import createServer from "../src/Server";
 import WebSocket from "ws";
-const expect = require('chai').expect;
+import { expect } from "chai";
 
 describe("Test Backend", () => {
     const server = createServer();
