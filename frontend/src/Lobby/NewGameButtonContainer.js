@@ -4,7 +4,9 @@ import {gotoLoadingView} from "../ViewSelection/Actions";
 import {newGame} from "./Actions";
 
 const mapStateToProps = (state, ownProps) => {
-    return {}
+    return {
+        buttonDisabled: !state.room.host
+    }
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
