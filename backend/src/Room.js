@@ -33,6 +33,12 @@ class Room {
         goodPlayers.forEach(player => player.sendMessage(goodGuyMessage));
         evilPlayers.forEach(player => player.sendMessage(badGuyMessage(player, evilPlayers)))
     }
+
+    endGame() {
+        console.log("Ending game...");
+        const endGameMessage = {type: "GAME_ENDED"};
+        this.players.forEach(player => player.sendMessage(endGameMessage));
+    }
 }
 
 // credits: https://stackoverflow.com/a/19270021

@@ -8,6 +8,7 @@ export const ROOM_JOINED = "ROOM_JOINED";
 export const PLAYER_JOINED = "PLAYER_JOINED";
 export const PLAYER_LEFT = "PLAYER_LEFT";
 export const NEW_GAME = "NEW_GAME";
+export const GAME_ENDED = "GAME_ENDED";
 
 export const connect = () => {
     return {

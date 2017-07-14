@@ -1,6 +1,7 @@
 import {CONNECT_TO_SERVER, connected, connecting, disconnected, disconnecting, error, roomJoined} from "./Actions";
 import {CREATE_ROOM, JOIN_ROOM} from "../JoinRoom/Actions";
 import {START_NEW_GAME} from "../Lobby/Actions";
+import {END_GAME} from "../Game/Actions";
 
 const WebsocketMiddleware = (() => {
     let socket = null;
@@ -73,6 +74,20 @@ const WebsocketMiddleware = (() => {
                 break;
 
             case START_NEW_GAME:
+                if (socket === null) {
+                    store.dispatch(connecting());
+
+                    socket = new WebSocket("ws://" + window.location.hostname + ":8080/websocket");
+                    socket.onmessage = onMessage(socket, store);
+                    socket.onclose = onClose(socket, store);
+                    socket.onopen = onOpen(socket, store, actionWithUsername);
+                } else {
+                    socket.send(JSON.stringify(actionWithUsername));
+                }
+
+                break;
+
+            case END_GAME:
                 if (socket === null) {
                     store.dispatch(connecting());
 

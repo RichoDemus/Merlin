@@ -66,6 +66,10 @@ const createServer = () => {
                     ctx.room.newGame();
                     break;
                 }
+                case "END_GAME": {
+                    ctx.room.endGame();
+                    break;
+                }
                 default:
                     console.log("Unknown type:",action.type);
             }
