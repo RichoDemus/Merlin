@@ -23,7 +23,7 @@ class Room {
     }
 
     newGame() {
-        const goodGuyMessage = {type: "NEW_GAME", role: "GOOD"};
+        const goodGuyMessage = {type: "NEW_GAME", role: "GOOD", friends:[]};
 
         console.log("Players:", this.players.map(p => p.name));
         const evilPlayers = getRandom(this.players, numEvilPlayers(this.players.length));

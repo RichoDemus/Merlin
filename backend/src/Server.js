@@ -62,7 +62,7 @@ const createServer = () => {
                     }));
                     break;
                 }
-                case "NEW_GAME": {
+                case "START_NEW_GAME": {
                     ctx.room.newGame();
                     break;
                 }

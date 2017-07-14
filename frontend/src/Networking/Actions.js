@@ -7,6 +7,7 @@ export const ERROR = "ERROR";
 export const ROOM_JOINED = "ROOM_JOINED";
 export const PLAYER_JOINED = "PLAYER_JOINED";
 export const PLAYER_LEFT = "PLAYER_LEFT";
+export const NEW_GAME = "NEW_GAME";
 
 export const connect = () => {
     return {

@@ -4,15 +4,13 @@ import {view} from "./ViewSelection/Reducers";
 import {joinRoom} from "./JoinRoom/Reducers";
 import {room} from "./Lobby/Reducers";
 import {error} from "./Error/Reducers";
+import {game} from "./Game/Reducers";
 
 export const merlinApp = combineReducers({
     name,
     view,
     joinRoom,
-    asd: (state = {}, action) => {
-        console.log("Event:", action.type);
-        return state;
-    },
     room,
-    error
+    error,
+    game
 });

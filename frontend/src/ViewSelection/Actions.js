@@ -4,6 +4,7 @@ export const JOIN_ROOM_VIEW = "JOIN_ROOM_VIEW";
 export const LOADING_VIEW = "LOADING_VIEW";
 export const LOBBY_VIEW = "LOBBY_VIEW";
 export const ERROR_VIEW = "ERROR_VIEW";
+export const GAME_VIEW = "GAME_VIEW";
 
 export const gotoJoinRoomView = () => {
     return {
