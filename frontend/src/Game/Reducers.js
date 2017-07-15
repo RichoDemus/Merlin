@@ -4,7 +4,8 @@ export const game = (state = "", action) => {
         case NEW_GAME:
             return {
                 role: action.role,
-                friends: action.friends
+                friends: action.friends,
+                lord: action.lord
             };
         default:
             return state;

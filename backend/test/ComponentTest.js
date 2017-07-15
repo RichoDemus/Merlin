@@ -21,7 +21,7 @@ describe("Test Backend", () => {
         const assertRoomJoined = msg => {
             expect(msg.type).to.equal("ROOM_JOINED");
             expect(msg.host).to.equal(true);
-            expect(JSON.stringify(msg.users)).to.equal(JSON.stringify([{name: "Carl"}]));
+            expect(JSON.stringify(msg.users)).to.equal(JSON.stringify([{name: "Carl", lord: false}]));
             expect(msg.number).to.be.a("number");
         };
 
@@ -40,7 +40,7 @@ describe("Test Backend", () => {
         const assertRoomJoined = (roomNumber, msg) => {
             expect(msg.type).to.equal("ROOM_JOINED");
             expect(msg.host).to.equal(false);
-            expect(JSON.stringify(msg.users)).to.equal(JSON.stringify([{name: "Carl"}, {name: "Jill"}]));
+            expect(JSON.stringify(msg.users)).to.equal(JSON.stringify([{name: "Carl", lord: false}, {name: "Jill", lord: false}]));
             expect(msg.number).to.equal(roomNumber);
         };
 
@@ -91,10 +91,15 @@ describe("Test Backend", () => {
         const assertNewGame = newGameResponses => {
             const evilPeople = newGameResponses.filter(msg => msg.role === "EVIL");
             const goodPeople = newGameResponses.filter(msg => msg.role === "GOOD");
+            const evilLord = evilPeople.filter(player => player.lord === true);
+            const evilMinion = evilPeople.filter(player => player.lord === false);
 
             expect(newGameResponses).to.have.lengthOf(5);
             expect(goodPeople).to.have.lengthOf(3);
             expect(evilPeople).to.have.lengthOf(2);
+            expect(evilLord).to.have.lengthOf(1);
+            expect(evilMinion[0].friends[0].lord).to.equal(true);
+            expect(evilLord[0].friends[0].lord).to.equal(false);
         };
 
         let carlsClient;

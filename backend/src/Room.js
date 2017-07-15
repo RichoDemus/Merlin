@@ -27,16 +27,24 @@ class Room {
 
         console.log("Players:", this.players.map(p => p.name));
         const evilPlayers = getRandom(this.players, numEvilPlayers(this.players.length));
-        const goodPlayers = getGoodPlayers(this.players, evilPlayers);
+        const goodPlayers = without(this.players, evilPlayers);
         console.log("Evil players:", evilPlayers.map(player => player.name));
         console.log("Good players:", goodPlayers.map(player => player.name));
+
+        const evilLord = getRandom(evilPlayers, 1);
+        evilLord[0].makeLord();
+
+        const evilMinions = without(evilPlayers, evilLord);
+
         goodPlayers.forEach(player => player.sendMessage(goodGuyMessage));
-        evilPlayers.forEach(player => player.sendMessage(badGuyMessage(player, evilPlayers)))
+        evilMinions.forEach(player => player.sendMessage(badGuyMessage(player, evilLord[0], evilPlayers)));
+        evilLord.forEach(player => player.sendMessage(evilLordMessage(player, evilPlayers, this.players.length)));
     }
 
     endGame() {
         console.log("Ending game...");
         const endGameMessage = {type: "GAME_ENDED"};
+        this.players.forEach(player => player.reset());
         this.players.forEach(player => player.sendMessage(endGameMessage));
     }
 }
@@ -55,19 +63,31 @@ function getRandom(arr, n) {
     }
     return result;
 }
-// it 5 or 6, evil lord knows minions
+
 // 5 or 6 => 2, 7 or 8 => 3, 9 or 10 => 4
 const numEvilPlayers = num => Math.floor((num-1) / 2);
 
-const getGoodPlayers = (players, evilPlayers) => {
-    const evilPlayerNames = evilPlayers.map(player => player.name);
-    return players.filter(player => !evilPlayerNames.includes(player.name));
-};
-
-const badGuyMessage = (player, evilPlayers) => {
+const badGuyMessage = (player, lord, evilPlayers) => {
     const evilFriends = evilPlayers.filter(p => p.name !== player.name);
-    return {type: "NEW_GAME", role: "EVIL", friends: evilFriends};
+    return {type: "NEW_GAME", role: "EVIL", lord: false, friends: evilFriends};
 };
 
+const evilLordMessage = (player, evilPlayers, totalNumPlayers) => {
+    if(canLordSeeMinions(totalNumPlayers)) {
+        const evilFriends = evilPlayers.filter(p => p.name !== player.name);
+        return {type: "NEW_GAME", role: "EVIL", lord: true, friends: evilFriends};
+    } else {
+        return {type: "NEW_GAME", role: "EVIL", lord: true, friends: []};
+    }
+};
+
+// it 5 or 6, evil lord knows minions
+const canLordSeeMinions = numPlayers => numPlayers === 5 || numPlayers === 6;
+
+// Returns a new array of players without the exluded players
+const without = (players, excludes) => {
+    const excludedPlayerNames = excludes.map(player => player.name);
+    return players.filter(player => !excludedPlayerNames.includes(player.name));
+};
 
 export default Room;
