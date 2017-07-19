@@ -3,9 +3,9 @@ import {DisplayRole} from "./DisplayRole";
 
 const mapStateToProps = (state, ownProps) => {
     return {
+        team: state.game.team,
         role: state.game.role,
         friends: state.game.friends,
-        lord: state.game.lord
     }
 };
 

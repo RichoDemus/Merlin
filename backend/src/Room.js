@@ -1,4 +1,5 @@
 import {playerJoined, playerLeft} from "./Messages";
+
 class Room {
     constructor(hostPlayer) {
         this.players = [];
@@ -23,7 +24,7 @@ class Room {
     }
 
     newGame() {
-        const goodGuyMessage = {type: "NEW_GAME", role: "GOOD", friends:[]};
+        const goodGuyMessage = {type: "NEW_GAME", team: "liberal", role: "liberal", friends: []};
 
         console.log("Players:", this.players.map(p => p.name));
         const evilPlayers = getRandom(this.players, numEvilPlayers(this.players.length));
@@ -31,14 +32,24 @@ class Room {
         console.log("Evil players:", evilPlayers.map(player => player.name));
         console.log("Good players:", goodPlayers.map(player => player.name));
 
-        const evilLord = getRandom(evilPlayers, 1);
-        evilLord[0].makeLord();
+        goodPlayers.forEach(player => {
+            player.setTeam("liberal");
+            player.setRole("liberal");
+        });
 
-        const evilMinions = without(evilPlayers, evilLord);
+        evilPlayers.forEach(player => {
+            player.setTeam("fascist");
+            player.setRole("fascist");
+        });
+
+        const hitler = getRandom(evilPlayers, 1);
+        hitler[0].setRole("hitler");
+
+        const evilMinions = without(evilPlayers, hitler);
 
         goodPlayers.forEach(player => player.sendMessage(goodGuyMessage));
-        evilMinions.forEach(player => player.sendMessage(badGuyMessage(player, evilLord[0], evilPlayers)));
-        evilLord.forEach(player => player.sendMessage(evilLordMessage(player, evilPlayers, this.players.length)));
+        evilMinions.forEach(player => player.sendMessage(badGuyMessage(player, hitler[0], evilPlayers)));
+        hitler.forEach(player => player.sendMessage(evilLordMessage(player, evilPlayers, this.players.length)));
     }
 
     endGame() {
@@ -65,19 +76,19 @@ function getRandom(arr, n) {
 }
 
 // 5 or 6 => 2, 7 or 8 => 3, 9 or 10 => 4
-const numEvilPlayers = num => Math.floor((num-1) / 2);
+const numEvilPlayers = num => Math.floor((num - 1) / 2);
 
 const badGuyMessage = (player, lord, evilPlayers) => {
     const evilFriends = evilPlayers.filter(p => p.name !== player.name);
-    return {type: "NEW_GAME", role: "EVIL", lord: false, friends: evilFriends};
+    return {type: "NEW_GAME", team: "fascist", role: "fascist", friends: evilFriends};
 };
 
 const evilLordMessage = (player, evilPlayers, totalNumPlayers) => {
-    if(canLordSeeMinions(totalNumPlayers)) {
+    if (canLordSeeMinions(totalNumPlayers)) {
         const evilFriends = evilPlayers.filter(p => p.name !== player.name);
-        return {type: "NEW_GAME", role: "EVIL", lord: true, friends: evilFriends};
+        return {type: "NEW_GAME", team: "fascist", role: "hitler", friends: evilFriends};
     } else {
-        return {type: "NEW_GAME", role: "EVIL", lord: true, friends: []};
+        return {type: "NEW_GAME", team: "fascist", role: "hitler", friends: []};
     }
 };
 

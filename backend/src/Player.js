@@ -2,14 +2,16 @@ class Player {
     constructor(name, websocket) {
         this.name = name;
         this.websocket = websocket;
-        this.lord = false;
+        this.team = null;
+        this.role = null;
     }
 
     // we don't want to try to serialize the websocket
     toJSON() {
         return {
             name: this.name,
-            lord: this.lord
+            team: this.team,
+            role: this.role,
         };
     }
 
@@ -17,12 +19,17 @@ class Player {
         this.websocket.send(JSON.stringify(message));
     }
 
-    makeLord() {
-        this.lord = true;
+    setTeam(team) {
+        this.team = team;
+    }
+
+    setRole(role) {
+        this.role = role;
     }
 
     reset() {
-        this.lord = false;
+        this.team = null;
+        this.role = null;
     }
 }
 
