@@ -9,7 +9,7 @@ import GameView from "../Game/GameView";
 
 export const SelectView = ({view}) => (
     <div>
-        { (() => {
+        {(() => {
             switch (view) {
                 case JOIN_ROOM_VIEW:
                     return <JoinRoomView/>;

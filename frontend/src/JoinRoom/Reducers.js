@@ -1,4 +1,5 @@
 import {JOIN_ROOM} from "./Actions";
+
 export const joinRoom = (state = null, action) => {
     switch (action.type) {
         case JOIN_ROOM:

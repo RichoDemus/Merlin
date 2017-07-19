@@ -71,7 +71,7 @@ const createServer = () => {
                     break;
                 }
                 default:
-                    console.log("Unknown type:",action.type);
+                    console.log("Unknown type:", action.type);
             }
         });
         ctx.websocket.on('close', message => {

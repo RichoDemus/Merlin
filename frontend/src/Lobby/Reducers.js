@@ -1,4 +1,5 @@
 import {PLAYER_JOINED, PLAYER_LEFT, ROOM_JOINED} from "../Networking/Actions";
+
 export const room = (state = {}, action) => {
     switch (action.type) {
         case ROOM_JOINED:
