@@ -2,7 +2,6 @@ import React from "react";
 import "./App.css";
 import {Provider} from "react-redux";
 import {applyMiddleware, createStore} from "redux";
-import thunk from "redux-thunk";
 import {merlinApp} from "./BaseReducer";
 import SelectViewContainer from "./ViewSelection/SelectViewContainer";
 import WebsocketMiddleware from "./Networking/WebsocketMiddleware";
@@ -18,7 +17,7 @@ const logger = store => next => action => {
 
 const store = createStore(
     merlinApp,
-    applyMiddleware(logger, thunk, WebsocketMiddleware)
+    applyMiddleware(logger, WebsocketMiddleware)
 );
 
 const App = () => (
