@@ -11,7 +11,7 @@ RUN npm install
 
 COPY public /app/public
 COPY src /app/src
-RUN npm run build && npm install -g serve
+RUN REACT_APP_BACKEND_URL=wss://api.merlin.cloud.richodems.com/websocket npm run build && npm install -g serve
 CMD serve -s build
 
 EXPOSE 5000
