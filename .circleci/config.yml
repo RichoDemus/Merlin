@@ -7,3 +7,7 @@ jobs:
     steps:
       - checkout
       - run: ./build.sh
+      - run: |
+                docker login -u $DOCKER_USER -p $DOCKER_PASS
+                docker push richodemus/merlin-backend:latest
+                docker push richodemus/merlin-frontend:latest
