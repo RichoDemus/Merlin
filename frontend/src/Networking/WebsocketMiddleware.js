@@ -2,6 +2,7 @@ import {CONNECT_TO_SERVER, connected, connecting, disconnected, disconnecting, e
 import {CREATE_ROOM, JOIN_ROOM} from "../JoinRoom/Actions";
 import {START_NEW_GAME} from "../Lobby/Actions";
 import {END_GAME} from "../Game/Actions";
+import {serverUrl} from "./ServerUrlProvider";
 
 const WebsocketMiddleware = (() => {
     let socket = null;
@@ -49,7 +50,7 @@ const WebsocketMiddleware = (() => {
                 if (socket === null) {
                     store.dispatch(connecting());
 
-                    socket = new WebSocket("ws://" + window.location.hostname + ":8080/websocket");
+                    socket = new WebSocket((serverUrl()));
                     socket.onmessage = onMessage(socket, store);
                     socket.onclose = onClose(socket, store);
                     socket.onopen = onOpen(socket, store, actionWithUsername);
@@ -63,7 +64,7 @@ const WebsocketMiddleware = (() => {
                 if (socket === null) {
                     store.dispatch(connecting());
 
-                    socket = new WebSocket("ws://" + window.location.hostname + ":8080/websocket");
+                    socket = new WebSocket(serverUrl());
                     socket.onmessage = onMessage(socket, store);
                     socket.onclose = onClose(socket, store);
                     socket.onopen = onOpen(socket, store, actionWithUsername);
@@ -77,7 +78,7 @@ const WebsocketMiddleware = (() => {
                 if (socket === null) {
                     store.dispatch(connecting());
 
-                    socket = new WebSocket("ws://" + window.location.hostname + ":8080/websocket");
+                    socket = new WebSocket((serverUrl()));
                     socket.onmessage = onMessage(socket, store);
                     socket.onclose = onClose(socket, store);
                     socket.onopen = onOpen(socket, store, actionWithUsername);
@@ -91,7 +92,7 @@ const WebsocketMiddleware = (() => {
                 if (socket === null) {
                     store.dispatch(connecting());
 
-                    socket = new WebSocket("ws://" + window.location.hostname + ":8080/websocket");
+                    socket = new WebSocket((serverUrl()));
                     socket.onmessage = onMessage(socket, store);
                     socket.onclose = onClose(socket, store);
                     socket.onopen = onOpen(socket, store, actionWithUsername);

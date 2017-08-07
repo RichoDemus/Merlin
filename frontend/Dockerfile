@@ -1,4 +1,4 @@
-FROM node:8.1.2-alpine
+FROM node:8.2.1-alpine
 
 # Re-add if we add a dependency that requires git to download
 #RUN apk --no-cache add git
