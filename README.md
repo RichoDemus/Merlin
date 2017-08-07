@@ -1,4 +1,5 @@
 # Merlin
+![Build Status](https://circleci.com/gh/RichoDemus/merlin.svg?style=shield&circle-token=ee0a3783837e01084e329b4ea61de43afac2f9cf)
 
 ## Development
 
