@@ -4,6 +4,9 @@ jobs:
     machine:
       services:
         - docker
+    branches:
+      only:
+        - master
     steps:
       - checkout
       - run: ./build.sh
