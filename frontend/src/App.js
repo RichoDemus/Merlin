@@ -10,6 +10,11 @@ import {JOIN_ROOM} from "./JoinRoom/Actions";
 import {gotoJoinRoomView, NAME_INPUT_VIEW, SET_VIEW} from "./ViewSelection/Actions";
 import {setName} from "./NameInput/Actions";
 
+// Node doesn't support these so tests fail...
+if (!console["group"]) console["group"] = function() {};
+if (!console["groupCollapsed"]) console["groupCollapsed"] = function() {};
+if (!console["groupEnd"]) console["groupEnd"] = function() {};
+
 const logger = store => next => action => {
     console.group("Action:", action.type);
     console.info('dispatching', action);
