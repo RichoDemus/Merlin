@@ -5,6 +5,7 @@ export const DISCONNECTING_FROM_SERVER = "DISCONNECTING_FROM_SERVER";
 export const DISCONNECTED_FROM_SERVER = "DISCONNECTED_FROM_SERVER";
 export const ERROR = "ERROR";
 export const ROOM_JOINED = "ROOM_JOINED";
+export const ROOM_LEFT = "ROOM_LEFT";
 export const PLAYER_JOINED = "PLAYER_JOINED";
 export const PLAYER_LEFT = "PLAYER_LEFT";
 export const NEW_GAME = "NEW_GAME";
@@ -53,5 +54,11 @@ export const roomJoined = (message) => {
         users: message.users,
         number: message.number,
         host: message.host
+    }
+};
+
+export const roomLeft = () => {
+    return {
+        type: ROOM_LEFT
     }
 };

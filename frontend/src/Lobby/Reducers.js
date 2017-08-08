@@ -1,10 +1,9 @@
-import {PLAYER_JOINED, PLAYER_LEFT, ROOM_JOINED} from "../Networking/Actions";
+import {PLAYER_JOINED, PLAYER_LEFT, ROOM_JOINED, ROOM_LEFT} from "../Networking/Actions";
 
 export const room = (state = {}, action) => {
     switch (action.type) {
         case ROOM_JOINED:
             return {
-                number: action.number,
                 users: action.users,
                 host: action.host
             };
@@ -15,6 +14,17 @@ export const room = (state = {}, action) => {
         case PLAYER_LEFT:
             const newPlayers = state.users.filter(p => p.name !== action.player.name);
             return Object.assign({}, state, {users: newPlayers});
+        default:
+            return state;
+    }
+};
+
+export const roomNumber = (state = null, action) => {
+    switch (action.type) {
+        case ROOM_JOINED:
+            return action.number;
+        case ROOM_LEFT:
+            return null;
         default:
             return state;
     }

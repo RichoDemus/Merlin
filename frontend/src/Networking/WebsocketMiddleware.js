@@ -1,4 +1,7 @@
-import {CONNECT_TO_SERVER, connected, connecting, disconnected, disconnecting, error, roomJoined} from "./Actions";
+import {
+    CONNECT_TO_SERVER, connected, connecting, disconnected, disconnecting, error, roomJoined,
+    roomLeft
+} from "./Actions";
 import {CREATE_ROOM, JOIN_ROOM} from "../JoinRoom/Actions";
 import {LEAVE_ROOM, START_NEW_GAME} from "../Lobby/Actions";
 import {END_GAME} from "../Game/Actions";
@@ -80,6 +83,7 @@ const WebsocketMiddleware = (() => {
                     socket.close();
                     socket = null;
                 }
+                store.dispatch(roomLeft());
                 break;
 
             case START_NEW_GAME:
