@@ -1,6 +1,6 @@
 import {CONNECT_TO_SERVER, connected, connecting, disconnected, disconnecting, error, roomJoined} from "./Actions";
 import {CREATE_ROOM, JOIN_ROOM} from "../JoinRoom/Actions";
-import {START_NEW_GAME} from "../Lobby/Actions";
+import {LEAVE_ROOM, START_NEW_GAME} from "../Lobby/Actions";
 import {END_GAME} from "../Game/Actions";
 import {serverUrl} from "./ServerUrlProvider";
 
@@ -72,6 +72,14 @@ const WebsocketMiddleware = (() => {
                     socket.send(JSON.stringify(actionWithUsername));
                 }
 
+                break;
+
+            case LEAVE_ROOM:
+                if(socket && socket.readyState === socket.OPEN) {
+                    socket.onclose = null;
+                    socket.close();
+                    socket = null;
+                }
                 break;
 
             case START_NEW_GAME:
