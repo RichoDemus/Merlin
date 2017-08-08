@@ -20,6 +20,13 @@ export const gotoLoadingView = () => {
     }
 };
 
+export const gotoNameInputView = () => {
+    return {
+        type: SET_VIEW,
+        view: NAME_INPUT_VIEW
+    }
+};
+
 export const gotoLobbyView = () => {
     return {
         type: SET_VIEW,
