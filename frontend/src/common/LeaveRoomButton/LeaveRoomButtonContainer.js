@@ -1,7 +1,7 @@
 import {connect} from "react-redux";
 import {LeaveRoomButton} from "./LeaveRoomButton";
-import {gotoJoinRoomView} from "../ViewSelection/Actions";
-import {leaveRoom} from "./Actions";
+import {gotoJoinRoomView} from "../../ViewSelection/Actions";
+import {leaveRoom} from "../../Lobby/Actions";
 
 const mapStateToProps = (state, ownProps) => {
     return {}

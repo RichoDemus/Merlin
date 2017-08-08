@@ -3,7 +3,7 @@ import DisplayNameContainer from "../common/displayname/DisplayNameContainer";
 import ListUsersContainer from "./ListUsersContainer";
 import RoomNumberContainer from "./RoomNumberContainer";
 import NewGameButtonContainer from "./NewGameButtonContainer";
-import LeaveRoomButtonContainer from "./LeaveRoomButtonContainer";
+import LeaveRoomButtonContainer from "../common/LeaveRoomButton/LeaveRoomButtonContainer";
 
 const LobbyView = () => (
     <div className="Lobby">
