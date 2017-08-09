@@ -15,6 +15,10 @@ const createServer = () => {
         return next(ctx);
     });
 
+    app.use(route.all("/info", ctx => {
+        ctx.body = "<html><body><h1>Rooms</h1>" + rooms.toHtml() + "</body>";
+    }));
+
 // Using routes
     app.ws.use(route.all('/websocket', ctx => {
         // `ctx` is the regular koa context created from the `ws` onConnection `socket.upgradeReq` object.
