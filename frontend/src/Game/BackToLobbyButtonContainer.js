@@ -5,7 +5,8 @@ import {BackToLobbyButton} from "./BackToLobbyButton";
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        buttonDisabled: !state.room.host
+        // buttonDisabled: !state.room.host
+        buttonDisabled: false
     }
 };
 

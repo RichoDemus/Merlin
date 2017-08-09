@@ -5,7 +5,8 @@ import {newGame} from "./Actions";
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        buttonDisabled: !state.room.host || state.room.users.length < 5
+        // buttonDisabled: !state.room.host || state.room.users.length < 5
+        buttonDisabled: state.room.users.length < 5
     }
 };
 
