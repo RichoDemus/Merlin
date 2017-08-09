@@ -1,10 +1,10 @@
 import {playerJoined, playerLeft} from "./Messages";
 
 class Room {
-    constructor(hostPlayer) {
+    constructor(hostPlayer, roomNumber) {
         this.players = [];
         this.players.push(hostPlayer);
-        this.roomNumber = Math.floor(Math.random() * 9000) + 1000;
+        this.roomNumber = roomNumber;
     }
 
     get size() {
