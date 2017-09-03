@@ -91,7 +91,7 @@ describe("Test Backend", () => {
         return Promise.all([carlSawJillJoin, jillJoinedRoom]);
     });
 
-    it("Carl starts a game", () => {
+    it("Carl starts a game with 5 people", () => {
         const assertNewGame = newGameResponses => {
             const evilPeople = newGameResponses.filter(msg => msg.team === "fascist");
             const goodPeople = newGameResponses.filter(msg => msg.team === "liberal");
@@ -126,7 +126,77 @@ describe("Test Backend", () => {
         });
 
         const otherClientsCreated = carlJoinedRoom
-            .then(_ => Promise.all([createClient("Jill"), createClient("Jonas"), createClient("James"), createClient("Joanna")]));
+            .then(_ => Promise.all([
+                createClient("Jill"),
+                createClient("Jonas"),
+                createClient("James"),
+                createClient("Joanna")
+            ]));
+
+        let otherClients;
+        otherClientsCreated.then(clients => {
+            otherClients = clients;
+        });
+
+        const othersJoinedRoom = otherClientsCreated
+            .then(clients => clients.map(client => client.waitForMessageOfType("ROOM_JOINED")));
+
+        otherClientsCreated
+            .then(clients => clients.map(client => client.joinRoom(roomNumber)));
+
+        const allGotNewGame = othersJoinedRoom
+            .then(_ => Promise.all([...otherClients, carlsClient].map(client => client.waitForMessageOfType("NEW_GAME"))))
+            .then(assertNewGame);
+
+        othersJoinedRoom
+            .then(_ => carlsClient.newGame());
+
+        return allGotNewGame;
+    });
+
+    it("Carl starts a game with 7 people", () => {
+        const assertNewGame = newGameResponses => {
+            const evilPeople = newGameResponses.filter(msg => msg.team === "fascist");
+            const goodPeople = newGameResponses.filter(msg => msg.team === "liberal");
+            const evilLord = evilPeople.filter(player => player.role === "hitler");
+            const evilMinion = evilPeople.filter(player => player.role === "fascist");
+
+            expect(newGameResponses).to.have.lengthOf(7);
+            expect(goodPeople).to.have.lengthOf(4);
+            expect(evilPeople).to.have.lengthOf(3);
+            expect(evilLord).to.have.lengthOf(1);
+            expect(evilMinion[0].friends.map(friend => friend.role)).to.have.all.members(["fascist", "hitler"]);
+            expect(evilLord[0].friends).to.be.an('array').that.is.empty;
+        };
+
+        let carlsClient;
+
+        const carlsClientCreated = createClient("Carl");
+
+        carlsClientCreated.then(client => {
+            carlsClient = client
+        });
+
+        const carlJoinedRoom = carlsClientCreated
+            .then(client => client.waitForMessageOfType("ROOM_JOINED"));
+
+        carlsClientCreated
+            .then(client => client.createRoom());
+
+        let roomNumber;
+        carlJoinedRoom.then(({number}) => {
+            roomNumber = number;
+        });
+
+        const otherClientsCreated = carlJoinedRoom
+            .then(_ => Promise.all([
+                createClient("Jill"),
+                createClient("Jonas"),
+                createClient("James"),
+                createClient("Joanna"),
+                createClient("Jax"),
+                createClient("Jene")
+            ]));
 
         let otherClients;
         otherClientsCreated.then(clients => {
